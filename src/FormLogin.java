@@ -115,7 +115,7 @@ public class FormLogin extends javax.swing.JFrame {
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
        if(Login.getText().equals("PBO")){
             if(Cancel.getText().equals("BPOAVS")){
-                 new InputSuara().show();
+                 new Menu().show();
                 this.dispose(); }
             else {
                 JOptionPane.showMessageDialog(rootPane, "PERINGATAN, PASSWORD SALAH SILAHKAN COBA LAGI !!!");
