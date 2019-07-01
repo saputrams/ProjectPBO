@@ -1,14 +1,20 @@
 
 package quickcount;
 
+import Connection.Koneksi;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class formlogin extends javax.swing.JFrame {
 
-
+    Koneksi conn;
+    
     public formlogin() {
         initComponents();
+        conn = new Koneksi();
     }
 
 
@@ -100,21 +106,41 @@ public class formlogin extends javax.swing.JFrame {
     }//GEN-LAST:event_PassActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-            if (login.getText().equals ("PBO")) {
-                if (Pass.getText().equals("PBOTEORI")) {
-                    new Menu().show();
-                    this.dispose();  }
-                else {
-                    JOptionPane.showMessageDialog(rootPane, "PERINGATAN, PASSWORD SALAH SILAHKAN COBA LAGI !!");
-                    Pass.setText("  ");
-                    Pass.requestFocus();
-            }
-       }
+        int ada = login(login.getText(),Pass.getText())  ;
+        if(ada == 1){
+            
+            new Menu().show();
+            this.dispose();  
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "PERINGATAN, PASSWORD SALAH SILAHKAN COBA LAGI !!");
+            Pass.setText("  ");
+            Pass.requestFocus();
+        }
+       
            // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
     /**
      * @param args the command line arguments
      */
+    private int login(String username, String password){
+        
+        int ada = 0;
+        try {
+            conn.ps = conn.con.prepareStatement("select count(*) from users where username = ? and password = md5(?)");
+            conn.ps.setString(1, username);
+            conn.ps.setString(2, password);
+            conn.rs = conn.ps.executeQuery();
+            
+            while(conn.rs.next()){
+                ada = conn.rs.getInt(0);
+            }
+        } catch (SQLException ex) {
+            return 0;
+        }
+        
+        return ada;
+        
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
