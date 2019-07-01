@@ -41,7 +41,6 @@ public class formlogin extends javax.swing.JFrame {
 
         jButton2.setText("CANCEL");
 
-        Pass.setText("PBOTEORI");
         Pass.setToolTipText("");
         Pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,7 +90,7 @@ public class formlogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         pack();
