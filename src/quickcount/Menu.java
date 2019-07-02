@@ -31,7 +31,7 @@ public class Menu extends javax.swing.JFrame {
 
         jButton1.setText("INPUT DATA");
 
-        jButton2.setText("TAMPIL DATA");
+        jButton2.setText("VIEW DATA");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
