@@ -1,5 +1,5 @@
 
-package quickcount;
+package Design;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ public class Menu extends javax.swing.JFrame {
   
     public Menu() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -89,6 +90,9 @@ public class Menu extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        INPUTDATA inputdata = new INPUTDATA();
+        inputdata.show();
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

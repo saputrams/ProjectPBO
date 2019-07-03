@@ -6,22 +6,22 @@
 package Connection;
 
 import java.beans.Statement;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+    
 /**
  *
  * @author ASUS
  */
-public class Connection {
-    Connection con;
-    Statement st;
-    ResultSet rs;
-    String pesan;
-    PreparedStatement ps;
+public class Koneksi {
+    public Connection con;
+    public String pesan;
+    public PreparedStatement ps;
+    public ResultSet rs;
 
-    public Connection() {
+    public Koneksi() {
         pesan ="";
         try{
             Class.forName("org.postgresql.Driver");
@@ -30,8 +30,10 @@ public class Connection {
             pesan="SUKSES";
             
         }catch (Exception e){
-           pesan = e.getMessage();
+           e.printStackTrace();
         }
+        
+        System.out.println("pesan : "+pesan);
     }
     
     

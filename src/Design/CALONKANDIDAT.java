@@ -3,19 +3,89 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package quickcount;
+package Design;
+
+import Connection.Koneksi;
+import Model.Calon;
+import Model.Lembaga;
+import Model.TipeCalon;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
  * @author Afita Afrillia
  */
 public class CALONKANDIDAT extends javax.swing.JFrame {
-
+    ArrayList<TipeCalon> listTipeCalon = new ArrayList<>();
+    ArrayList<Calon> listCalon = new ArrayList<>();
+    Koneksi connect;
+    int lembaga_id;
     /**
      * Creates new form CALONKANDIDAT
      */
     public CALONKANDIDAT() {
         initComponents();
+    }
+    
+    public CALONKANDIDAT(int lembaga_id) {
+        initComponents();
+        setLocationRelativeTo(null);
+        this.lembaga_id = lembaga_id;
+        connect = new Koneksi();
+        loadComboBoxTipeCalon();
+        loadComboBoxCalon();
+    }
+    
+    private void loadComboBoxTipeCalon(){
+        cb_tipe_calon.removeAllItems();;
+        try {
+            String sql = "select * from tipe_calon";
+            connect.ps = connect.con.prepareStatement(sql);
+            connect.rs = connect.ps.executeQuery();
+            while(connect.rs.next()){
+                TipeCalon obj = new TipeCalon();
+                obj.setTipe_calon_id(connect.rs.getInt("tipe_calon_id"));
+                obj.setTipe_calon(connect.rs.getString("nama_tipe_calon"));
+                listTipeCalon.add(obj);
+            }
+        } catch (SQLException ex) {
+            System.out.println("err : "+ex.getMessage());
+        }
+        
+        for(int i = 0; i < listTipeCalon.size(); i++){
+            cb_tipe_calon.addItem(listTipeCalon.get(i).getTipe_calon());
+        }
+    }
+    
+    private void loadComboBoxCalon(){
+        
+        cb_calon.removeAllItems();
+        try {
+            String sql = "select * from calon where tipe_calon_id = "+listTipeCalon.get(cb_tipe_calon.getSelectedIndex()).getTipe_calon_id();
+            System.out.println(sql);
+            connect.ps = connect.con.prepareStatement(sql);
+            connect.rs = connect.ps.executeQuery();
+            int i=0;
+            while(connect.rs.next()){
+                Calon obj = new Calon();
+                obj.setCalon_id(connect.rs.getInt("calon_id"));
+                obj.setNama_calon(connect.rs.getString("nama_calon"));
+                listCalon.add(obj);
+                i++;
+            }
+            System.out.println(i);
+        } catch (SQLException ex) {
+            System.out.println("err : "+ex.getMessage());
+        }
+        
+        for(int i = 0; i < listCalon.size(); i++){
+            cb_calon.addItem(listCalon.get(i).getNama_calon());
+        }
+    }
+    
+    private void inputSuara(){
+        
     }
 
     /**
@@ -29,39 +99,38 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        cb_tipe_calon = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        cb_calon = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         jLabel1.setText("INPUT DATA CALON");
 
-        jLabel2.setText("TIPE CALON                     :");
+        jLabel2.setText("TIPE CALON");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CALON", "PRESIDEN & CAPRES", "DPR", "DPD", "DPRD DKI JAKARTA", "DPRD JAKARTA BARAT" }));
+        cb_tipe_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CALON", "PRESIDEN & CAPRES", "DPR", "DPD", "DPRD DKI JAKARTA", "DPRD JAKARTA BARAT" }));
+        cb_tipe_calon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_tipe_calonActionPerformed(evt);
+            }
+        });
 
-        jLabel3.setText("LEMBAGA                          :");
+        jLabel4.setText("JUMLAH SUARA ");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA LEMBAGA", "CHARTA POLITIKA", "INDIKATOR", "CSIS", "SMRC", "LINGKARAN SURVEI INDONESIA DENNY J.A", "INDO BAROMETER", "CYRUS NETWORK", "POPULI CENTER", "KONSEP INDONESIA" }));
-
-        jLabel4.setText("JUMLAH SUARA                :");
-
-        jLabel6.setText("NAMA CALON                   :");
+        jLabel6.setText("NAMA CALON");
 
         jButton1.setText("SAVE");
 
         jButton2.setText("KEMBALI");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA CALON" }));
+        cb_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA CALON" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -71,30 +140,27 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(49, 49, 49)
                                 .addComponent(jButton1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField2))))
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(90, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(257, 257, 257))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cb_tipe_calon, 0, 294, Short.MAX_VALUE)
+                            .addComponent(cb_calon, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(39, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -111,37 +177,38 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
                     .addComponent(jButton2))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(cb_tipe_calon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cb_calon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(jTextField2)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(jLabel5))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cb_tipe_calonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tipe_calonActionPerformed
+        // TODO add your handling code here:
+        System.out.println(cb_tipe_calon.getSelectedIndex());
+        if(cb_tipe_calon.getSelectedIndex() >= 0){
+            loadComboBoxCalon();
+        }
+    }//GEN-LAST:event_cb_tipe_calonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,14 +246,12 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cb_calon;
+    private javax.swing.JComboBox<String> cb_tipe_calon;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

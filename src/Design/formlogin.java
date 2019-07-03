@@ -1,5 +1,5 @@
 
-package quickcount;
+package Design;
 
 import Connection.Koneksi;
 import java.sql.SQLException;
@@ -14,6 +14,7 @@ public class formlogin extends javax.swing.JFrame {
     
     public formlogin() {
         initComponents();
+        setLocationRelativeTo(null);
         conn = new Koneksi();
     }
 
@@ -27,8 +28,8 @@ public class formlogin extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        login = new javax.swing.JTextField();
-        Pass = new javax.swing.JPasswordField();
+        tx_user = new javax.swing.JTextField();
+        tx_password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,10 +48,10 @@ public class formlogin extends javax.swing.JFrame {
 
         jButton2.setText("CANCEL");
 
-        Pass.setToolTipText("");
-        Pass.addActionListener(new java.awt.event.ActionListener() {
+        tx_password.setToolTipText("");
+        tx_password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PassActionPerformed(evt);
+                tx_passwordActionPerformed(evt);
             }
         });
 
@@ -66,12 +67,12 @@ public class formlogin extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(login)
-                            .addComponent(Pass, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
+                            .addComponent(tx_user)
+                            .addComponent(tx_password, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(63, 63, 63)
                         .addComponent(jButton1)
@@ -87,11 +88,11 @@ public class formlogin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_user, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -102,19 +103,19 @@ public class formlogin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void PassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PassActionPerformed
-    }//GEN-LAST:event_PassActionPerformed
+    private void tx_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_passwordActionPerformed
+    }//GEN-LAST:event_tx_passwordActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int ada = login(login.getText(),Pass.getText())  ;
+        int ada = login(tx_user.getText(),tx_password.getText())  ;
+        System.out.println("ada "+ada);
         if(ada == 1){
             
             new Menu().show();
             this.dispose();  
         }else{
             JOptionPane.showMessageDialog(rootPane, "PERINGATAN, PASSWORD SALAH SILAHKAN COBA LAGI !!");
-            Pass.setText("  ");
-            Pass.requestFocus();
+            tx_password.requestFocus();
         }
        
            // TODO add your handling code here:
@@ -126,17 +127,16 @@ public class formlogin extends javax.swing.JFrame {
         
         int ada = 0;
         try {
-            conn.ps = conn.con.prepareStatement("select count(*) from users where username = ? and password = md5(?)");
-            conn.ps.setString(1, username);
-            conn.ps.setString(2, password);
+            String sql = "select count(*) as jumlah from users where user_name = '"+username+"' and user_password = md5('"+password+"')";
+            conn.ps = conn.con.prepareStatement(sql);
             conn.rs = conn.ps.executeQuery();
-            
             while(conn.rs.next()){
-                ada = conn.rs.getInt(0);
+                ada = conn.rs.getInt("jumlah");
             }
-        } catch (SQLException ex) {
-            return 0;
+        } catch (Exception ex) {
+            ada = 0;
         }
+        
         
         return ada;
         
@@ -174,12 +174,12 @@ public class formlogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPasswordField Pass;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField login;
+    private javax.swing.JPasswordField tx_password;
+    private javax.swing.JTextField tx_user;
     // End of variables declaration//GEN-END:variables
 }
