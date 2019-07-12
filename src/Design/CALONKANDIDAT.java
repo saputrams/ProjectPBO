@@ -168,7 +168,7 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel7.setIcon(new javax.swing.ImageIcon("D:\\indo\\Majapahit_Expansion.gif")); // NOI18N
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(-200, -150, 740, 470));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 270));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

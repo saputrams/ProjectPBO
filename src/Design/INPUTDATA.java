@@ -157,7 +157,7 @@ public class INPUTDATA extends javax.swing.JFrame {
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 60, -1, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon("D:\\indo\\83927853-template-background-indonesia-independence-day.jpg")); // NOI18N
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-160, -240, 910, -1));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-150, -230, 880, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
