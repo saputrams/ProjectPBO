@@ -118,14 +118,14 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="TIPE CALON"/>
+        <Property name="text" type="java.lang.String" value="TIPE KANDIDAT"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="cb_tipe_calon">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="6">
-            <StringItem index="0" value="CALON"/>
+            <StringItem index="0" value="KANDIDAT"/>
             <StringItem index="1" value="PRESIDEN &amp; CAPRES"/>
             <StringItem index="2" value="DPR"/>
             <StringItem index="3" value="DPD"/>
@@ -150,7 +150,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
-        <Property name="text" type="java.lang.String" value="NAMA CALON"/>
+        <Property name="text" type="java.lang.String" value="NAMA KANDIDAT"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField2">
@@ -168,8 +168,22 @@
     <Component class="javax.swing.JComboBox" name="cb_calon">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="1">
-            <StringItem index="0" value="NAMA CALON"/>
+          <StringArray count="15">
+            <StringItem index="0" value="NAMA KANDIDAT"/>
+            <StringItem index="1" value="Joko Widodo - Maruf Amin"/>
+            <StringItem index="2" value="Prabowo Subianto - Sandiaga Uno"/>
+            <StringItem index="3" value="Musliha B"/>
+            <StringItem index="4" value="Chicha Koeswoyo"/>
+            <StringItem index="5" value="Putra Nababan"/>
+            <StringItem index="6" value="Harun Al Rasyid"/>
+            <StringItem index="7" value="Wanda Hamidah"/>
+            <StringItem index="8" value="Fristin Agustinus"/>
+            <StringItem index="9" value="Muhammad Ali Reza"/>
+            <StringItem index="10" value="Zahara Tussoleha"/>
+            <StringItem index="11" value="Afita Afrillia"/>
+            <StringItem index="12" value="Vegi Syam Merkury"/>
+            <StringItem index="13" value="Muh Sukma Saputra"/>
+            <StringItem index="14" value="Yessy Asri"/>
           </StringArray>
         </Property>
       </Properties>

@@ -113,9 +113,9 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         jLabel1.setText("INPUT DATA CALON");
 
-        jLabel2.setText("TIPE CALON");
+        jLabel2.setText("TIPE KANDIDAT");
 
-        cb_tipe_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CALON", "PRESIDEN & CAPRES", "DPR", "DPD", "DPRD DKI JAKARTA", "DPRD JAKARTA BARAT" }));
+        cb_tipe_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "KANDIDAT", "PRESIDEN & CAPRES", "DPR", "DPD", "DPRD DKI JAKARTA", "DPRD JAKARTA BARAT" }));
         cb_tipe_calon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_tipe_calonActionPerformed(evt);
@@ -124,13 +124,13 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
 
         jLabel4.setText("JUMLAH SUARA ");
 
-        jLabel6.setText("NAMA CALON");
+        jLabel6.setText("NAMA KANDIDAT");
 
         jButton1.setText("SAVE");
 
         jButton2.setText("KEMBALI");
 
-        cb_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA CALON" }));
+        cb_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA KANDIDAT", "Joko Widodo - Maruf Amin", "Prabowo Subianto - Sandiaga Uno", "Musliha B", "Chicha Koeswoyo", "Putra Nababan", "Harun Al Rasyid", "Wanda Hamidah", "Fristin Agustinus", "Muhammad Ali Reza", "Zahara Tussoleha", "Afita Afrillia", "Vegi Syam Merkury", "Muh Sukma Saputra", "Yessy Asri" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
