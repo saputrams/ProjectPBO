@@ -11,6 +11,7 @@ import Model.Lembaga;
 import Model.TipeCalon;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  */
 public class CALONKANDIDAT extends javax.swing.JFrame {
     ArrayList<TipeCalon> listTipeCalon = new ArrayList<>();
-    ArrayList<Calon> listCalon = new ArrayList<>();
+    ArrayList<Calon> listCalon;
     Koneksi connect;
     int lembaga_id;
     /**
@@ -60,6 +61,7 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
     
     private void loadComboBoxCalon(){
         
+        listCalon = new ArrayList<>();
         cb_calon.removeAllItems();
         try {
             String sql = "select * from calon where tipe_calon_id = "+listTipeCalon.get(cb_tipe_calon.getSelectedIndex()).getTipe_calon_id();
@@ -85,7 +87,16 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
     }
     
     private void inputSuara(){
-        
+        try {
+            String sql = "insert into suaracalon (calon_id,lembaga_id,jumlah_suara) "
+                    + "values("+listCalon.get(cb_calon.getSelectedIndex()).getCalon_id()+","+lembaga_id+","+txSuara.getText()+")";
+            System.out.println(sql);
+            connect.con.createStatement().executeUpdate(sql);
+            connect.con.createStatement().close();
+            JOptionPane.showMessageDialog(rootPane, "SUKSES ISI SUARA");
+        } catch (SQLException se) {
+            JOptionPane.showMessageDialog(null, se.getMessage(), "ERROR QUERY", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -104,7 +115,7 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
         cb_tipe_calon = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txSuara = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         cb_calon = new javax.swing.JComboBox<>();
@@ -112,10 +123,8 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 10)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 153, 0));
-        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\indo\\kpu-bali-serahkan-hasil-audit-dana-kampanye-parpol-peserta-pemilu-2019-TFSjMXvK1q.jpg")); // NOI18N
         jLabel3.setText("jLabel3");
 
-        jLabel5.setIcon(new javax.swing.ImageIcon("D:\\indo\\1280px-Flag_map_of_Indonesia.svg.png")); // NOI18N
         jLabel5.setText("jLabel5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -131,6 +140,11 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
 
         cb_tipe_calon.setFont(new java.awt.Font("Times New Roman", 0, 10)); // NOI18N
         cb_tipe_calon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "KANDIDAT", "PRESIDEN & CAPRES", "DPR", "DPD", "DPRD DKI JAKARTA", "DPRD JAKARTA BARAT" }));
+        cb_tipe_calon.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cb_tipe_calonItemStateChanged(evt);
+            }
+        });
         cb_tipe_calon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_tipe_calonActionPerformed(evt);
@@ -146,15 +160,25 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
         jLabel6.setText("NAMA KANDIDAT");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 131, 23));
 
-        jTextField2.setFont(new java.awt.Font("Times New Roman", 0, 10)); // NOI18N
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 160, 76, -1));
+        txSuara.setFont(new java.awt.Font("Times New Roman", 0, 10)); // NOI18N
+        getContentPane().add(txSuara, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 160, 76, -1));
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
         jButton1.setText("SAVE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 80, 30));
 
         jButton2.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
         jButton2.setText("BACK");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, -1, -1));
 
         cb_calon.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
@@ -167,23 +191,42 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
         getContentPane().add(cb_calon, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 110, 294, -1));
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel7.setIcon(new javax.swing.ImageIcon("D:\\indo\\Majapahit_Expansion.gif")); // NOI18N
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 270));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cb_tipe_calonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tipe_calonActionPerformed
-        // TODO add your handling code here:
-        System.out.println(cb_tipe_calon.getSelectedIndex());
-        if(cb_tipe_calon.getSelectedIndex() >= 0){
-            loadComboBoxCalon();
-        }
+      
     }//GEN-LAST:event_cb_tipe_calonActionPerformed
 
     private void cb_calonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_calonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_calonActionPerformed
+
+    private void cb_tipe_calonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_tipe_calonItemStateChanged
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        System.out.println(cb_tipe_calon.getSelectedIndex());
+        if(cb_tipe_calon.getSelectedIndex() >= 0){
+            loadComboBoxCalon();
+        }
+    }//GEN-LAST:event_cb_tipe_calonItemStateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        inputSuara();
+        INPUTDATA id = new INPUTDATA();
+        id.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        INPUTDATA id = new INPUTDATA();
+        id.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -232,6 +275,6 @@ public class CALONKANDIDAT extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField txSuara;
     // End of variables declaration//GEN-END:variables
 }

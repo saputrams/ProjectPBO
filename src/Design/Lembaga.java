@@ -5,17 +5,61 @@
  */
 package Design;
 
+import Connection.Koneksi;
+import Model.RekapCalon;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Afita Afrillia
  */
 public class Lembaga extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Lembaga
-     */
+    Koneksi connect = new Koneksi();
+    
     public Lembaga() {
         initComponents();
+        LoadTable();
+        setLocationRelativeTo(null);
+    }
+    
+    public void LoadTable(){
+        ArrayList<RekapCalon> listSuara = new ArrayList<>();
+        try {
+            String sql = "select c.lembaga_id,d.tipe_calon_id,b.calon_id,lembaga_name, nama_calon, nama_tipe_calon, sum(jumlah_suara) as suara \n" +
+                                "from suaracalon a, calon b, lembaga c, tipe_calon d\n" +
+                                "where a.calon_id = b.calon_id\n" +
+                                "and c.lembaga_id = a.lembaga_id\n" +
+                                "and d.tipe_calon_id = b.tipe_calon_id\n" +
+                                "group by c.lembaga_id,d.tipe_calon_id,b.calon_id,lembaga_name, nama_calon, nama_tipe_calon\n" +
+                                "order by c.lembaga_id,d.tipe_calon_id, b.calon_id asc\n";
+            connect.ps = connect.con.prepareStatement(sql);
+            connect.rs = connect.ps.executeQuery();
+            while(connect.rs.next()){
+                RekapCalon obj = new RekapCalon();
+                obj.setNamaLembaga(connect.rs.getString("lembaga_name"));
+                obj.setNamaCalon(connect.rs.getString("nama_calon"));
+                obj.setTipeCalon(connect.rs.getString("nama_tipe_calon"));
+                obj.setJumlahSuara(connect.rs.getInt("suara"));
+                listSuara.add(obj);
+            }
+        } catch (SQLException ex) {
+            System.out.println("err : "+ex.getMessage());
+        }
+        
+        String[] column = {"Nama Lembaga","Nama Calon", "Tipe Calon", "Jumlah Suara"};
+        String[][] row = new String [listSuara.size()][4];
+        for(int i =0 ; i<listSuara.size();i++){
+            row[i][0]= listSuara.get(i).getNamaLembaga();
+            row[i][1]= listSuara.get(i).getNamaCalon();
+            row[i][2]= listSuara.get(i).getTipeCalon();
+            row[i][3]= String.valueOf(listSuara.get(i).getJumlahSuara());
+        }
+        
+        DefaultTableModel model = new DefaultTableModel(row, column);
+        tbl_suara.setModel(model);
+    
     }
 
     /**
@@ -27,166 +71,51 @@ public class Lembaga extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
-        Presiden1 = new javax.swing.JLabel();
-        Presiden2 = new javax.swing.JLabel();
-        dpr1 = new javax.swing.JLabel();
-        dpr2 = new javax.swing.JLabel();
-        dpr3 = new javax.swing.JLabel();
-        p1 = new javax.swing.JTextField();
-        p2 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        a1 = new javax.swing.JTextField();
-        a2 = new javax.swing.JTextField();
-        a3 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        b1 = new javax.swing.JTextField();
-        b2 = new javax.swing.JTextField();
-        b3 = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabel18 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbl_suara = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Yu Gothic UI", 1, 12)); // NOI18N
-        jLabel1.setText("Hasil Hitung Cepat");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(23, 12, 218, -1));
-
-        jComboBox1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA LEMBAGA", "CHARTA POLITIKA", "INDIKATOR", "CSIS", "SMRC", "LINGKARAN SURVEI INDONESIA DENNY J.A", "INDO BAROMETER", "CYRUS NETWORK", "POPULI CENTER", "KONSEP INDONESIA" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 11, 131, -1));
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI Emoji", 1, 14)); // NOI18N
-        jLabel2.setText("Kandidat : ");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(9, 48, -1, -1));
-
-        Presiden1.setText("Joko Widodo - Maruf Amin              :");
-        getContentPane().add(Presiden1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 182, -1));
-
-        Presiden2.setText("Prabowo Subianto - Sandiaga Uno  :");
-        getContentPane().add(Presiden2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 128, 182, -1));
-
-        dpr1.setText("Musliha B                                        :");
-        getContentPane().add(dpr1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 182, -1));
-
-        dpr2.setText("Chicha Koeswoyo                           :");
-        getContentPane().add(dpr2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 221, 182, -1));
-
-        dpr3.setText("Putra Nababan                               :");
-        getContentPane().add(dpr3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 252, 182, -1));
-        getContentPane().add(p1, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 97, 33, -1));
-
-        p2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                p2ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(p2, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 125, 33, -1));
-
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel3.setText("Presiden & Wapres");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 72, 134, -1));
-
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel4.setText("DPR");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 159, 103, -1));
-
-        a1.setText("  ");
-        a1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                a1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(a1, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 187, 33, -1));
-        getContentPane().add(a2, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 218, 33, -1));
-        getContentPane().add(a3, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 249, 33, -1));
-
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel5.setText("DPRD");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 56, -1));
-
-        jLabel6.setText("Harun Al Rasyid                            :");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 309, -1, -1));
-
-        jLabel7.setText("Wanda Hamidah                            :");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 182, -1));
-
-        jLabel8.setText("Fristin Agustinus                            :");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 371, -1, -1));
-        getContentPane().add(b1, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 306, 33, -1));
-        getContentPane().add(b2, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 337, 33, -1));
-        getContentPane().add(b3, new org.netbeans.lib.awtextra.AbsoluteConstraints(195, 368, 34, -1));
-
-        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel9.setText("DPRD DKI JAKARTA");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 72, 146, -1));
-
-        jLabel10.setText("Muhammad Ali Reza             :");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 100, 146, -1));
-
-        jLabel11.setText("Zahara Tussoleha                :");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 128, 146, -1));
-
-        jLabel12.setText("Afita Afrillia                          :");
-        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 156, 146, -1));
-
-        jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel13.setText("DPRD JAKARTA BARAT");
-        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 221, 214, -1));
-
-        jLabel14.setText("Vegi Syam Mercury               :");
-        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 252, -1, -1));
-
-        jLabel15.setText("Muh Sukma Saputra              :");
-        getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 283, 147, -1));
-
-        jLabel16.setText("Yessy Asri                              :");
-        getContentPane().add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 309, -1, -1));
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(562, 97, 36, -1));
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(562, 125, 36, -1));
-        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(562, 156, 36, -1));
-        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(563, 249, 34, -1));
-        getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(563, 280, 34, -1));
-        getContentPane().add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(565, 306, 32, -1));
-
-        jLabel17.setIcon(new javax.swing.ImageIcon("D:\\indo\\INI.jpeg")); // NOI18N
-        getContentPane().add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -10, 680, 400));
-
         jButton1.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
-        jButton1.setText("SAVE");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 400, -1, -1));
+        jButton1.setText("Kembali");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 380, -1, -1));
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel18.setText("Hasil Rekap Pemilu");
+        getContentPane().add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 30, -1, -1));
+
+        tbl_suara.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tbl_suara);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, 520, 300));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void a1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_a1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_a1ActionPerformed
-
-    private void p2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_p2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_p2ActionPerformed
+        Menu menu = new Menu();
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -224,43 +153,9 @@ public class Lembaga extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Presiden1;
-    private javax.swing.JLabel Presiden2;
-    private javax.swing.JTextField a1;
-    private javax.swing.JTextField a2;
-    private javax.swing.JTextField a3;
-    private javax.swing.JTextField b1;
-    private javax.swing.JTextField b2;
-    private javax.swing.JTextField b3;
-    private javax.swing.JLabel dpr1;
-    private javax.swing.JLabel dpr2;
-    private javax.swing.JLabel dpr3;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField p1;
-    private javax.swing.JTextField p2;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tbl_suara;
     // End of variables declaration//GEN-END:variables
 }

@@ -59,7 +59,7 @@ public class INPUTDATA extends javax.swing.JFrame {
     private void loadTable(int lembaga_id){
         ArrayList<Suara> listSuara = new ArrayList<>();
         try {
-            String sql = "select b.nama_calon, c.nama_tipe_calon, count(jumlah_suara) as suara from lembaga a, calon b, tipe_calon c, suaracalon d\n" +
+            String sql = "select b.nama_calon, c.nama_tipe_calon, sum(jumlah_suara) as suara from lembaga a, calon b, tipe_calon c, suaracalon d\n" +
                             "where a.lembaga_id = d.lembaga_id\n" +
                             "and b.calon_id = d.calon_id \n" +
                             "and b.tipe_calon_id = c.tipe_calon_id\n" +
@@ -118,6 +118,11 @@ public class INPUTDATA extends javax.swing.JFrame {
 
         jButton2.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jButton2.setText("BACK");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 400, -1, -1));
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
@@ -155,8 +160,6 @@ public class INPUTDATA extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 130, -1, -1));
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 60, -1, -1));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\indo\\83927853-template-background-indonesia-independence-day.jpg")); // NOI18N
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-150, -230, 880, -1));
 
         pack();
@@ -175,6 +178,13 @@ public class INPUTDATA extends javax.swing.JFrame {
         calon.show();
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        Menu menu = new Menu();
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -5,17 +5,110 @@
  */
 package Design;
 
+import Connection.Koneksi;
+import Model.PresentaseCalon;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Afita Afrillia
  */
 public class VIEWDATA extends javax.swing.JFrame {
-
+    Koneksi connect;
+    ArrayList<Model.Lembaga> listLembaga = new ArrayList<>();
+    ArrayList<PresentaseCalon> listPresentase ;
     /**
      * Creates new form VIEWDATA
      */
     public VIEWDATA() {
         initComponents();
+        setLocationRelativeTo(null);
+        connect = new Koneksi();
+        loadComboBox();
+        loadTable(1);
+    }
+    
+    private void loadComboBox(){
+        cb_lembaga.removeAllItems();;
+        try {
+            String sql = "select * from lembaga";
+            connect.ps = connect.con.prepareStatement(sql);
+            connect.rs = connect.ps.executeQuery();
+            while(connect.rs.next()){
+                Model.Lembaga obj = new Model.Lembaga();
+                obj.setLembagaId(connect.rs.getInt("lembaga_id"));
+                obj.setLembagaName(connect.rs.getString("lembaga_name"));
+                listLembaga.add(obj);
+            }
+        } catch (SQLException ex) {
+            System.out.println("err : "+ex.getMessage());
+        }
+        
+        for(int i = 0; i < listLembaga.size(); i++){
+            cb_lembaga.addItem(listLembaga.get(i).getLembagaName());
+        }
+    }
+    
+    public void loadTable(int id){
+        listPresentase = new ArrayList<>();
+        try {
+            PreparedStatement ps1;
+            ResultSet rs1;
+            String sql = "select d.tipe_calon_id, sum(jumlah_suara) as jml from suaracalon a, calon b, lembaga c, tipe_calon d\n" +
+                            "where a.calon_id = b.calon_id\n" +
+                            "and c.lembaga_id = a.lembaga_id\n" +
+                            "and d.tipe_calon_id = b.tipe_calon_id\n" +
+                            "and a.lembaga_id = "+id+"\n" +
+                            "group by d.tipe_calon_id";
+            ps1 = connect.con.prepareStatement(sql);
+            rs1 = ps1.executeQuery();
+            while(rs1.next()){
+                PreparedStatement ps2;
+                ResultSet rs2;
+                int jumlah = Integer.parseInt(rs1.getString("jml"));
+                int tipe_calon = Integer.parseInt(rs1.getString("tipe_calon_id"));
+                
+                
+                String sql2 = "select nama_calon, nama_tipe_calon, sum(jumlah_suara) as suara from suaracalon a, calon b, lembaga c, tipe_calon d\n" +
+                                "where a.calon_id = b.calon_id\n" +
+                                "and c.lembaga_id = a.lembaga_id\n" +
+                                "and d.tipe_calon_id = b.tipe_calon_id\n" +
+                                "and a.lembaga_id = "+id+"\n" +
+                                "and d.tipe_calon_id = "+tipe_calon+"\n" +
+                                "group by nama_calon,nama_tipe_calon\n" +
+                                "order by suara desc\n"+
+                                "limit 1";
+                
+            System.out.println("sql 2 : "+sql2);
+                ps2 = connect.con.prepareStatement(sql2);
+                rs2 = ps2.executeQuery();
+                while(rs2.next()){
+                    PresentaseCalon p = new PresentaseCalon();
+                    p.setNama_calon(rs2.getString("nama_calon"));
+                    p.setTipe_calon(rs2.getString("nama_tipe_calon"));
+                    p.setSuara((Double.parseDouble(rs2.getString("suara"))/jumlah)*100);
+                    
+                    listPresentase.add(p);
+                }
+            }
+            System.out.println("list : "+listPresentase.size());
+            String[] column = {"Nama Calon", "Tipe Calon", "Presentase"};
+            String[][] row = new String [listPresentase.size()][3];
+            for(int i =0 ; i<listPresentase.size();i++){
+                row[i][0]= listPresentase.get(i).getNama_calon();
+                row[i][1]= listPresentase.get(i).getTipe_calon();
+                row[i][2]= String.valueOf(listPresentase.get(i).getSuara());
+            }
+
+            DefaultTableModel model = new DefaultTableModel(row, column);
+            tbl_presentase.setModel(model);
+        } catch (SQLException ex) {
+            System.out.println("err : "+ex.getMessage());
+        }
     }
 
     /**
@@ -30,11 +123,10 @@ public class VIEWDATA extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cb_lembaga = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tbl_presentase = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         jRadioButton1.setText("jRadioButton1");
@@ -46,27 +138,27 @@ public class VIEWDATA extends javax.swing.JFrame {
         jLabel1.setText("PERSENTASE AKHIR");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 266, -1));
 
-        jComboBox1.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA LEMBAGA", "CHARTA POLITIKA", "INDIKATOR", "CSIS", "SMRC", "LINGKARAN SURVEI INDONESIA DENNY J.A", "INDO BAROMETER", "CYRUS NETWORK", "POPULI CENTER", "KONSEP INDONESIA" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 32, 151, 32));
+        cb_lembaga.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
+        cb_lembaga.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NAMA LEMBAGA", "CHARTA POLITIKA", "INDIKATOR", "CSIS", "SMRC", "LINGKARAN SURVEI INDONESIA DENNY J.A", "INDO BAROMETER", "CYRUS NETWORK", "POPULI CENTER", "KONSEP INDONESIA" }));
+        cb_lembaga.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cb_lembagaItemStateChanged(evt);
+            }
+        });
+        getContentPane().add(cb_lembaga, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 32, 151, 32));
 
         jScrollPane2.setBackground(java.awt.SystemColor.controlHighlight);
 
-        jTable2.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_presentase.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        tbl_presentase.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"PRESIDEN DAN WAPRES", null},
-                {"DPR", null},
-                {"DPD", null},
-                {"DPRD DKI JAKARTA", null},
-                {"DPRD JAKARTA BARAT", null},
-                {null, null}
+
             },
             new String [] {
-                "JENIS CALON", "PRESENTASE"
+                "Title 1", "Title 2", "Title 3"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tbl_presentase);
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 82, 664, 122));
 
@@ -77,13 +169,7 @@ public class VIEWDATA extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 330, -1, -1));
-
-        jButton3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jButton3.setText("OK");
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 80, 40));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\indo\\83927853-template-background-indonesia-independence-day.jpg")); // NOI18N
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 333, -1, 20));
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-450, -20, 1220, 520));
 
         pack();
@@ -91,7 +177,17 @@ public class VIEWDATA extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        Menu menu = new Menu();
+        menu.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void cb_lembagaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_lembagaItemStateChanged
+        // TODO add your handling code here:
+        if(cb_lembaga.getSelectedIndex() >= 0){
+        loadTable(listLembaga.get(cb_lembaga.getSelectedIndex()).getLembagaId());
+        }
+    }//GEN-LAST:event_cb_lembagaItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -129,14 +225,13 @@ public class VIEWDATA extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cb_lembaga;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable tbl_presentase;
     // End of variables declaration//GEN-END:variables
 }
